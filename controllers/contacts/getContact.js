@@ -1,5 +1,5 @@
 const { Contact } = require("../../models/modelContact");
-const { HttpError } = require("../../utils/httpError");
+const createError = require("http-errors");
 
 async function getContact(req, res, next) {
   try {
@@ -7,7 +7,7 @@ async function getContact(req, res, next) {
     const contact = await Contact.findById(contactId);
 
     if (!contact) {
-      return next(HttpError(404, "Not found"));
+      return next(createError(404, "Not found"));
     }
 
     return res.status(200).json({ contact });

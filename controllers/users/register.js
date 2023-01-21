@@ -1,6 +1,6 @@
 const { Users } = require("../../models/modelUsers");
 const { registerUserSchema } = require("../../utils/validation");
-const { HttpError } = require("../../utils/httpError");
+const createError = require("http-errors");
 const bcrypt = require("bcrypt");
 
 async function register(req, res, next) {
@@ -11,16 +11,14 @@ async function register(req, res, next) {
   try {
     const { error } = registerUserSchema.validate(req.body);
     if (error) {
-      return next(HttpError(400, "Missing required field"));
+      return next(createError(400, "Missing required field"));
     }
 
     const savedUser = await Users.create({ email, password: hasedPwd });
     res.status(201).json({ user: savedUser });
   } catch (error) {
     if (error.message.includes("E11000 duplicate key error")) {
-      res.status(409).json({
-        message: "Email in use",
-      });
+      return next(createError(409, "Email in use"));
     }
 
     throw error;
