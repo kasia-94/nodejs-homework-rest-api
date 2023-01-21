@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const schema = mongoose.Schema(
+const { Schema, model } = require("mongoose");
+const schema = Schema(
   {
     name: {
       type: String,
@@ -15,6 +15,10 @@ const schema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
   },
   {
     versionKey: false,
@@ -22,6 +26,6 @@ const schema = mongoose.Schema(
   }
 );
 
-const Contact = mongoose.model("contact", schema);
+const Contact = model("contact", schema);
 
 module.exports = { Contact };

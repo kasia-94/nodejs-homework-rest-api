@@ -1,7 +1,7 @@
 // const db = require("../models/contacts");
 const { HttpError } = require("../../utils/httpError");
 const { contactUpdateStatusSchema } = require("../../utils/validation");
-const { Contact } = require("../../models/model");
+const { Contact } = require("../../models/modelContact");
 
 async function updateStatusContact(req, res, next) {
   try {
