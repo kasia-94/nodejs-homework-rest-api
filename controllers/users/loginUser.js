@@ -1,6 +1,7 @@
 const { Users } = require("../../models/modelUsers");
 const bcrypt = require("bcrypt");
-const createError = require("http-errors");
+const { Unauthorized } = require("http-errors");
+const jwt = require("jsonwebtoken");
 
 async function loginUser(req, res, next) {
   const { email, password } = req.body;
@@ -9,17 +10,20 @@ async function loginUser(req, res, next) {
   });
 
   if (!storedUser) {
-    return next(createError(401, "Email is not valid"));
+    return next(Unauthorized("Email is not valid"));
   }
-
   const isPasswordValid = await bcrypt.compare(password, storedUser.password);
   if (!isPasswordValid) {
-    return next(createError(401, "Password is not valid"));
+    return next(Unauthorized("Password is not valid"));
   }
 
+  const token = jwt.sign({ id: storedUser._id }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "1h",
+  });
+  await Users.findByIdAndUpdate(storedUser._id, { token });
   return res.json({
     data: {
-      token: "<TOKEN>",
+      token,
     },
   });
 }
