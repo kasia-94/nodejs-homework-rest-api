@@ -1,13 +1,13 @@
 // const db = require("../models/contacts");
-const { HttpError } = require("../../utils/httpError");
-const { contactUpdateStatusSchema } = require("../../utils/validation");
-const { Contact } = require("../../models/model");
+const { NotFound, BadRequest } = require("http-errors");
+const { contactUpdateStatusSchema } = require("../../middlewares/validation");
+const { Contact } = require("../../models/modelContact");
 
 async function updateStatusContact(req, res, next) {
   try {
     const { error } = contactUpdateStatusSchema.validate(req.body);
     if (error) {
-      return next(HttpError(400, "Missing required name field"));
+      return next(BadRequest("Missing required name field"));
     }
 
     const { contactId } = req.params;
@@ -16,7 +16,7 @@ async function updateStatusContact(req, res, next) {
     });
 
     if (!result) {
-      return next(HttpError(404, "Not found"));
+      return next(NotFound("Not found"));
     }
 
     res.json(result);

@@ -11,7 +11,18 @@ const contactUpdateStatusSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
 
+const registerUserSchema = Joi.object({
+  email: Joi.string().required(),
+  password: Joi.string().required().min(8),
+});
+
+const usersUpdateSubscription = Joi.object({
+  subscription: Joi.string().valid("starter", "pro", "business"),
+});
+
 module.exports = {
   contactAddSchema,
   contactUpdateStatusSchema,
+  registerUserSchema,
+  usersUpdateSubscription,
 };
