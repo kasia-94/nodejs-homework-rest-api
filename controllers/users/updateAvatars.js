@@ -1,5 +1,4 @@
 const { Users } = require("../../models/modelUsers");
-// const { Unauthorized } = require("http-errors");
 const fs = require("fs/promises");
 const path = require("path");
 const Jimp = require("jimp");
