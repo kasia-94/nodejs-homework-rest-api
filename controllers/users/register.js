@@ -2,6 +2,7 @@ const { Users } = require("../../models/modelUsers");
 const { registerUserSchema } = require("../../middlewares/validation");
 const { BadRequest, Conflict } = require("http-errors");
 const bcrypt = require("bcrypt");
+const gravatar = require("gravatar");
 
 async function register(req, res, next) {
   const { email, password } = req.body;
@@ -13,8 +14,12 @@ async function register(req, res, next) {
     if (error) {
       return next(BadRequest("Missing required field"));
     }
-
-    const savedUser = await Users.create({ email, password: hasedPwd });
+    const avatarURL = gravatar.url(email);
+    const savedUser = await Users.create({
+      email,
+      password: hasedPwd,
+      avatarURL,
+    });
     res.status(201).json({ user: savedUser });
   } catch (error) {
     if (error.message.includes("E11000 duplicate key error")) {

@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 
 async function loginUser(req, res, next) {
   const { email, password } = req.body;
+  const { JWT_SECRET_KEY } = process.env;
   const storedUser = await Users.findOne({
     email,
   });
@@ -17,7 +18,7 @@ async function loginUser(req, res, next) {
     return next(Unauthorized("Password is not valid"));
   }
 
-  const token = jwt.sign({ id: storedUser._id }, process.env.JWT_SECRET_KEY, {
+  const token = jwt.sign({ id: storedUser._id }, JWT_SECRET_KEY, {
     expiresIn: "1h",
   });
   await Users.findByIdAndUpdate(storedUser._id, { token });
