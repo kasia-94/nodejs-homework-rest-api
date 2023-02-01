@@ -3,6 +3,8 @@ const { registerUserSchema } = require("../../middlewares/validation");
 const { BadRequest, Conflict } = require("http-errors");
 const bcrypt = require("bcrypt");
 const gravatar = require("gravatar");
+const { nanoid } = require("nanoid");
+const { sendEmail } = require("../../middlewares/sendEmail");
 
 async function register(req, res, next) {
   const { email, password } = req.body;
@@ -14,12 +16,21 @@ async function register(req, res, next) {
     if (error) {
       return next(BadRequest("Missing required field"));
     }
+    const verificationToken = nanoid();
     const avatarURL = gravatar.url(email);
     const savedUser = await Users.create({
       email,
       password: hasedPwd,
       avatarURL,
+      verificationToken,
     });
+    const mail = {
+      to: email,
+      subject: "Confirm email",
+      html: `<a target="_blanc" href='http://localhost:3000/api/users/verify/${verificationToken}'>Confirm email</a>`,
+    };
+    await sendEmail(mail);
+
     res.status(201).json({ user: savedUser });
   } catch (error) {
     if (error.message.includes("E11000 duplicate key error")) {

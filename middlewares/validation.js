@@ -20,9 +20,14 @@ const usersUpdateSubscription = Joi.object({
   subscription: Joi.string().valid("starter", "pro", "business"),
 });
 
+const verifyUserSchema = Joi.object({
+  email: Joi.string().required(),
+});
+
 module.exports = {
   contactAddSchema,
   contactUpdateStatusSchema,
   registerUserSchema,
   usersUpdateSubscription,
+  verifyUserSchema,
 };
