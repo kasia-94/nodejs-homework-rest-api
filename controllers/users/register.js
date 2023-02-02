@@ -4,7 +4,7 @@ const { BadRequest, Conflict } = require("http-errors");
 const bcrypt = require("bcrypt");
 const gravatar = require("gravatar");
 const { nanoid } = require("nanoid");
-const { sendEmail } = require("../../middlewares/sendEmail");
+const { email: srvc } = require("../../services");
 
 async function register(req, res, next) {
   const { email, password } = req.body;
@@ -29,7 +29,7 @@ async function register(req, res, next) {
       subject: "Confirm email",
       html: `<a target="_blanc" href='http://localhost:3000/api/users/verify/${verificationToken}'>Confirm email</a>`,
     };
-    await sendEmail(mail);
+    await srvc.sendEmail(mail);
 
     res.status(201).json({ user: savedUser });
   } catch (error) {
