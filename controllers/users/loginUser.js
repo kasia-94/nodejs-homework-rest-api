@@ -17,6 +17,9 @@ async function loginUser(req, res, next) {
   if (!isPasswordValid) {
     return next(Unauthorized("Password is not valid"));
   }
+  if (!storedUser.verify) {
+    return next(Unauthorized("User is not verified"));
+  }
 
   const token = jwt.sign({ id: storedUser._id }, JWT_SECRET_KEY, {
     expiresIn: "1h",
